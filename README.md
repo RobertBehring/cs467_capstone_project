@@ -1,8 +1,11 @@
 # CS 467 Capstone Project
 **Authors:** Jada Young, Eric Riemer, Robert Behring
 
+Initialize required packages using:  
+```$ pip install -r requirements.txt```
+
 ## GCP Functions Usage
-These are instructions for using the custom GCP client library functions [gcp_storage]
+These are instructions for using the custom GCP client library functions [gcp_storage]  
 ### Authenticate Google Cloud Client Libraries for Local Dev Environments
 
 1. Install and initialize the Google Cloud CLI
