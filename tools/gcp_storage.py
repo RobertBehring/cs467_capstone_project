@@ -1,5 +1,8 @@
 import os
+import random
+import argparse
 from dotenv import load_dotenv
+#from data_maker import get_rand_ookla
 from google.cloud import storage
 
 load_dotenv()
@@ -28,9 +31,8 @@ class GCPStorage:
 
     def print_buckets(self):
         """Prints all bucket names. """
-        buckets = self.storage_client.list_buckets()
         for bucket in self.buckets:
-            print(bucket.name)
+            print(bucket)
 
     def make_bucket(self, bucket_name:str):
         """Makes a bucket."""
@@ -47,16 +49,37 @@ class GCPStorage:
             print()
 
     def view_a_bucket(self, bucket_name):
+        """Prints name of blobs in a given bucket."""
         print(f"Viewing bucket: {bucket_name}")
         blobs = self.storage_client.list_blobs(bucket_name)
         for blob in blobs:
             print(blob.name)
 
     # TODO: function for uploading json file to bucket 
-    def upload_to_bucket(self, bucket_name, file_path):
-        pass
+    def upload_to_bucket(self, storage_bucket_name, file_path=None):
+        # Create the blob's name
+        dest_blob_name = os.getenv("DESTINATION_BLOB_NAME")
+        file_num = str(random.randint(1000,9999))
+        dest_blob_name = dest_blob_name + '_' + file_num
+
+        # Link to desired bucket and create new blob
+        bucket = self.storage_client.bucket(storage_bucket_name)
+        blob = bucket.blob(dest_blob_name)
+
+        # Know the json file path
+        if file_path:
+            blob.upload_from_filename(file_path)
+        else:
+            # Need to make the json still
+            pass
+#            data = get_rand_ookla()
+#           print(data)
+
+
+        print(f"Uploaded {dest_blob_name} to {storage_bucket_name}")
 
 if __name__ == "__main__":
     storage = GCPStorage()
-    storage.list_buckets()
+    storage.print_buckets()
     storage.view_a_bucket(STORAGE_BUCKET_NAME)
+    storage.upload_to_bucket(STORAGE_BUCKET_NAME, "random_ookla_1000.json")

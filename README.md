@@ -42,7 +42,9 @@ STORAGE_BUCKET_NAME = os.getenv("STORAGE_BUCKET_NAME")
 storage = GCPStorage()
 
 # Prints the name of all buckets
-storage.list_buckets()
-# Prints the contents of 
+storage.print_buckets()
+# Prints the name of objects stored in the bucket 
 storage.view_a_bucket(STORAGE_BUCKET_NAME)
+# Uploads a given file to a given bucket
+storage.upload_to_bucket(STORAGE_BUCKET_NAME, "random_ookla_1000.json")
 ```
