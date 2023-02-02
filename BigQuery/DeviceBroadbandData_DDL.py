@@ -14,7 +14,7 @@ client = bigquery.Client()
 # -- #####################################################
 # -- TABLE PARAMETERS
 # -- #####################################################
-project_dataset = "cs467-capstone-dummy-data.BroadbandDeviceData."
+project_dataset = "cs467-capstone-dummy-data.DeviceBroadbandData."
 # -- -----------------------------------------------------
 # -- Table NDT-7
 # -- -----------------------------------------------------
