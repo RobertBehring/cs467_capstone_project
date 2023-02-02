@@ -1,6 +1,7 @@
 import os
 import random
 import argparse
+import json
 from dotenv import load_dotenv
 #from data_maker import get_rand_ookla
 from google.cloud import storage
@@ -46,7 +47,10 @@ class GCPStorage:
             blobs = self.storage_client.list_blobs(bucket)
             for blob in blobs:
                 print(blob.name)
-            print()
+                # Download the contents of the blob as a string and then parse it using json.loads() method
+                data = json.loads(blob.download_as_string())
+                print(data)
+                print("-----------------\n")
 
     def view_a_bucket(self, bucket_name):
         """Prints name of blobs in a given bucket."""
@@ -54,6 +58,11 @@ class GCPStorage:
         blobs = self.storage_client.list_blobs(bucket_name)
         for blob in blobs:
             print(blob.name)
+            # Download the contents of the blob as a string and then parse it using json.loads() method
+            data = json.loads(blob.download_as_string())
+            print(data)
+            print("-----------------\n")
+
 
     # TODO: function for uploading json file to bucket 
     def upload_to_bucket(self, storage_bucket_name, file_path=None):
@@ -82,4 +91,4 @@ if __name__ == "__main__":
     storage = GCPStorage()
     storage.print_buckets()
     storage.view_a_bucket(STORAGE_BUCKET_NAME)
-    storage.upload_to_bucket(STORAGE_BUCKET_NAME, "random_ookla_1000.json")
+#    storage.upload_to_bucket(STORAGE_BUCKET_NAME, "40-ooklaRandomizedData.JSON")
