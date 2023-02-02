@@ -1,6 +1,5 @@
 import os
 import random
-import argparse
 import json
 from dotenv import load_dotenv
 #from data_maker import get_rand_ookla
