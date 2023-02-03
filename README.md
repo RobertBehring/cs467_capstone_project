@@ -49,6 +49,7 @@ storage.view_a_bucket(STORAGE_BUCKET_NAME)
 storage.upload_to_bucket(STORAGE_BUCKET_NAME, "random_ookla_1000.json")
 ```
 
+
 ## data_maker program Usage
 These are instructions for using the custom program [data_maker.py] to produce randomized data sets for both Ookla and Mlab JSONs.
 
@@ -77,6 +78,6 @@ If the `-p` flag is not set, then the data will be output as JSON files in the s
     - "TestEndTime"
     - "DownloadValue"
     - "UploadValue"
-    - "MinRTTValue"
+    - "MinRTValue"
 
 The current local time is used for the generated data, generally `"TestStartTime"` and `"TestEndTime"` will be identical. 
