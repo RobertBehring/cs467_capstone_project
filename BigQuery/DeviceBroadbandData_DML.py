@@ -1,5 +1,4 @@
 from google.cloud import bigquery
-import json
 
 client = bigquery.Client()
 # Project
@@ -16,7 +15,15 @@ multistream_table_id = '.'.join([project_id, dataset_id, "Multistream"])
 multistream_table_query_id = '`' + multistream_table_id + '`'
 multistream_table = client.get_table(multistream_table_id)
 
-def display_table_info(table) -> None:
+"""#### General Table Functions ###############################################"""
+def display_table_info(table: bigquery.Table) -> None:
+    """
+    display_table_info() prints the table information of the BigQuery table 
+    provided. 
+    
+    table: bigquery.Table class
+    return: None
+    """
     table_info = table.project + table.dataset_id + table.table_id
     table_schema = table.schema
     table_description = table.description
@@ -30,12 +37,20 @@ def display_table_info(table) -> None:
     print("Table has {} rows\n".format(table_rows))
     print("-----------------------------------------------------------")
 
-def send_query(query: str) -> QueryJob.result():
+def send_query(query: str) -> bigquery.QueryJob.result:
+    """
+    send_query() takes a given query string and creates a QueryJob class based
+    on the given BigQuery query. The function then executes the query job and
+    returns the iterator of the QueryJob class upon completion of the query job
+    
+    query: BigQuery query string
+    return: QueryJob.result() iterator
+    """
     query_job = client.query(query)
     return query_job.result()
 
 """#### CREATE ################################################################"""
-def insert_json_uri(table: Table, table_id: str, bucket_uri: str) -> None:
+def insert_json_uri(table: bigquery.Table, table_id: str, bucket_uri: str) -> None:
     """
     insert_json_uri() takes as parameters table, table_id, and bucket uri and
     inserts the data from the GCS bucket uri into the given BigQuery table.
@@ -84,14 +99,21 @@ times = {
     "yearly": """WHERE TestStartTime > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 365 DAY)\n"""
 }
 
+"""#### Testing Functions #####################################################"""
 def test_queries(query_dict: dict) -> None:
+    """
+    test_queries() runs through all of the queries in a given query dictionary
+    and prints the results to STDOUT.
+
+    query_dict: dictionary of query statements to test
+    return: None
+    """
     limiter = "LIMIT 1"
     for query in query_dict.keys():
         print("Running Query: {}".format(query))
         for row in send_query(query_dict[query]+limiter):
             print(row)
         print("-----------------------------------------------------------")
-
 
 
 if __name__ == '__main__':
