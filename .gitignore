@@ -3,3 +3,4 @@ venv
 *.json
 *.JSON
 tools/__pycache__
+cloud_functions/import_to_bq/
