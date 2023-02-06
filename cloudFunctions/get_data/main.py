@@ -1,9 +1,27 @@
 import functions_framework
 import json
 from google.cloud import storage
+from google.cloud import bigquery
+import DeviceBroadbandData_DML as DML
 
-# Copy of Cloud Function: Triggered by a change in a storage bucket
-# Will put new data into the proper table
+# Copy of get-new-upload Cloud Function used for automatically uploading from bucket to BigQuery 
+
+def get_file_data(bucket, name):
+   # Connect to the storage bucket and retrieve the file data
+   storage_client = storage.Client()
+   gcs_bucket = storage_client.bucket(bucket)
+   blob = gcs_bucket.blob(name)
+
+   # Retrieve the contents of the file
+   file_content = blob.download_as_string().decode("utf-8")
+
+   # Parse the contents of the file as a JSON object
+   json_content = json.loads(file_content)
+
+   print(json_content)
+   return blob.self_link()
+
+# Triggered by a change in a storage bucket
 @functions_framework.cloud_event
 def get_new_data(cloud_event):
    data = cloud_event.data
@@ -17,16 +35,13 @@ def get_new_data(cloud_event):
 
    print(f"Bucket: {bucket}")
    print(f"File: {name}")
+   
+   uri = f"gs://{bucket}/{name}"
+   print(uri)
 
-   # Connect to the storage bucket and retrieve the file data
-   storage_client = storage.Client()
-   gcs_bucket = storage_client.bucket(bucket)
-   file = gcs_bucket.blob(name)
+   if "ookla" in name:
+      DML.insert_json_uri(DML.multistream_table, DML.multistream_table_id, uri)
+      
+   else:
+      DML.insert_json_uri(DML.ndt7_table, DML.ndt7_table_id, uri)
 
-   # Retrieve the contents of the file
-   file_content = file.download_as_string().decode("utf-8")
-
-   # Parse the contents of the file as a JSON object
-   json_content = json.loads(file_content)
-
-   print(json_content)
