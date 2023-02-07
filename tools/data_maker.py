@@ -104,10 +104,20 @@ def get_current_time() -> str:
     local_time = time.localtime()
     year = local_time.tm_year
     month = local_time.tm_mon
+    if month < 10:
+        month = f"0{month}"
     day = local_time.tm_mday
+    if day < 10:
+        day = f"0{day}"
     hour = local_time.tm_hour
+    if hour < 10:
+        hour = f"0{hour}"
     minute = local_time.tm_min
+    if minute < 10:
+        minute = f"0{minute}"
     second = local_time.tm_sec
+    if second < 10:
+        second = f"0{second}"
 
     return f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
@@ -126,6 +136,7 @@ def get_rand_dist() -> float:
 def get_rand_data(type: str) -> dict:
     if type == "ookla":
         rand_data = ookla.copy()
+        rand_data["Timestamp"] = get_current_time() + '.010101Z'
         rand_data["Ping"] = get_rand_ping_time()
         rand_data["BytesSent"] = get_rand_bytes()
         rand_data["BytesReceived"] = get_rand_bytes()
