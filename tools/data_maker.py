@@ -106,7 +106,8 @@ def get_current_time() -> str:
     month = local_time.tm_mon
     if month < 10:
         month = f"0{month}"
-    day = local_time.tm_mday
+    day = random.randrange(0, 28)
+    # day = local_time.tm_mday
     if day < 10:
         day = f"0{day}"
     hour = local_time.tm_hour
@@ -174,10 +175,10 @@ def gen_data(num: int, mlab=False):
     for i in range(num):
         if mlab:
             rand_data = json.dumps(get_rand_data("mlab"))
-            file_name = str(i+1) + "-mlabRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-mlabRandomizedData.JSON"
         else:
             rand_data = json.dumps(get_rand_data("ookla"))
-            file_name = str(i+1) + "-ooklaRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-ooklaRandomizedData.JSON"
         if print_to_stdout:
             print(file_name)
             print()
