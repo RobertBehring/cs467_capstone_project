@@ -25,7 +25,10 @@ destination_file_name = timestamp + ".bq_export" + ".csv"
 bigquery_client = bigquery.Client(project=project_id)
 
 # Query the data you want to export
-query = "SELECT * FROM `" + dataset_id + "." + table_id + "`"
+# Commented out below is the query that will export all data
+# query = "SELECT * FROM `" + dataset_id + "." + table_id + "`"
+# Commneted out below is the query that will export data from the last 7 days
+query = "SELECT Timestamp,TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
 query_job = bigquery_client.query(query)
 results = query_job.result()
 
