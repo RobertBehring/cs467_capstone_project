@@ -81,10 +81,14 @@ def send_csv_email(cloud_event):
 
 
     # print("Exported data to: " + "gs://" + bucket_name + "/" + destination_file_name)
+    
+    # List of recipients for the email
+    recipients = ['recipient1@mail.com', 'recipient2@mail.com', 'recipient3@mail.com']
 
+    # Create the email message
     message = Mail(
         from_email='from_address@mail.com',
-        to_emails='to_address@mail.com',
+        to_emails= recipients,
         subject='BigQuery Export',
         html_content='<strong>This is a test email with a CSV BigQuery Export</strong>'
     )
