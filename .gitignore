@@ -5,4 +5,3 @@ venv
 tools/__pycache__
 BigQuery/__pycache__
 sendgrid.env
-BigQuery/__pycache__
