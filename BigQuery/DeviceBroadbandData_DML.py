@@ -110,7 +110,7 @@ multistream_queries = {
                     FROM
                         `cs467-capstone-dummy-data.DeviceBroadbandData.Multistream`
                     WHERE
-                        Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY) AND Timestamp <= CURRENT_TIMESTAMP()
+                        Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY) AND Timestamp <= CURRENT_TIMESTAMP()
                     ORDER BY
                         Timestamp"""
 }
