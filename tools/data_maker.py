@@ -104,9 +104,10 @@ def get_current_time() -> str:
     local_time = time.localtime()
     year = local_time.tm_year
     month = local_time.tm_mon
-    if month < 10:
-        month = f"0{month}"
-    day = random.randrange(0, 28)
+    # if month < 10:
+    #     month = f"0{month}"
+    month = "01"
+    day = random.randrange(1, 31)
     # day = local_time.tm_mday
     if day < 10:
         day = f"0{day}"
@@ -123,13 +124,13 @@ def get_current_time() -> str:
     return f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
 def get_rand_bit_per_sec() -> float:
-    return random.randrange(0, 9999999) + random.random()
+    return random.randrange(1000000, 2000000) + random.random()
 
 def get_rand_ping_time() -> float:
     return round(random.randrange(0, 200) + random.random(), 3)
 
 def get_rand_bytes() -> int:
-    return random.randrange(0, 9999999)
+    return random.randrange(900000, 1000000)
 
 def get_rand_dist() -> float:
     return random.randrange(0, 9999) + random.random()

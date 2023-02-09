@@ -13,14 +13,17 @@ server_latencies = list()
 
 
 for row in bigquery_data:
-    timestamps.append(row["Timestamp"])
-    download_values.append(row["DownloadValue"]/1000)
-    upload_values.append(row["UploadValue"]/1000)
-    pings.append(row["Ping"])
-    server_latencies.append(row["ServerLatency"])
-    download_unit = row["DownloadUnit"]
+    if row["Timestamp"] not in timestamps:
+        timestamps.append(row["Timestamp"])
+        download_values.append(row["DownloadValue"]/1000)
+        upload_values.append(row["UploadValue"]/1000)
+        pings.append(row["Ping"])
+        server_latencies.append(row["ServerLatency"])
+        download_unit = row["DownloadUnit"]
 
 timestamps = np.array(timestamps)
+
+# print(timestamps)
 
 plt.subplot(131)
 plt.plot(timestamps, download_values, label="Download", color="red", linewidth=2)
