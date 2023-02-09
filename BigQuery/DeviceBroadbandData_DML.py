@@ -89,7 +89,30 @@ def insert_json_uri(table: bigquery.Table, table_id: str, bucket_uri: str) -> No
 # Query Statements
 multistream_queries = {
     "selectAll": """SELECT * FROM {}\n""".format(multistream_table_query_id),
-    "selectDown/Upload": """SELECT TestName, ClientIP, TestStartTime, TestEndTime, DownloadValue, DownloadUnit, UploadValue, UploadUnit FROM {}\n""".format(multistream_table_query_id)
+    "selectDown/Upload": """SELECT TestName, ClientIP, TestStartTime, TestEndTime, DownloadValue, DownloadUnit, UploadValue, UploadUnit FROM {}\n""".format(multistream_table_query_id),
+    "requested": """SELECT
+                        Timestamp,
+                        TestStartTime,
+                        ClientIP,
+                        ClientLat,
+                        ClientLon,
+                        DownloadValue,
+                        DownloadUnit,
+                        UploadValue,
+                        UploadUnit,
+                        Ping,
+                        PingUnit,
+                        ServerLatency,
+                        ServerLatencyUnit,
+                        Isp,
+                        IspDownloadAvg,
+                        IspUploadAvg
+                    FROM
+                        `cs467-capstone-dummy-data.DeviceBroadbandData.Multistream`
+                    WHERE
+                        Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY) AND Timestamp <= CURRENT_TIMESTAMP()
+                    ORDER BY
+                        Timestamp"""
 }
 """Time Selection"""
 times = {
