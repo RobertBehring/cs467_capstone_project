@@ -3,4 +3,4 @@ venv
 *.json
 *.JSON
 tools/__pycache__
-cloud_functions/import_to_bq/
+cloud_functions/export_to_bq/__pycache__/
