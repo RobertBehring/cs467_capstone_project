@@ -104,21 +104,33 @@ def get_current_time() -> str:
     local_time = time.localtime()
     year = local_time.tm_year
     month = local_time.tm_mon
-    day = local_time.tm_mday
+    # if month < 10:
+    #     month = f"0{month}"
+    month = "01"
+    day = random.randrange(1, 31)
+    # day = local_time.tm_mday
+    if day < 10:
+        day = f"0{day}"
     hour = local_time.tm_hour
+    if hour < 10:
+        hour = f"0{hour}"
     minute = local_time.tm_min
+    if minute < 10:
+        minute = f"0{minute}"
     second = local_time.tm_sec
+    if second < 10:
+        second = f"0{second}"
 
     return f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
 def get_rand_bit_per_sec() -> float:
-    return random.randrange(0, 9999999) + random.random()
+    return random.randrange(1000000, 2000000) + random.random()
 
 def get_rand_ping_time() -> float:
     return round(random.randrange(0, 200) + random.random(), 3)
 
 def get_rand_bytes() -> int:
-    return random.randrange(0, 9999999)
+    return random.randrange(900000, 1000000)
 
 def get_rand_dist() -> float:
     return random.randrange(0, 9999) + random.random()
@@ -126,6 +138,7 @@ def get_rand_dist() -> float:
 def get_rand_data(type: str) -> dict:
     if type == "ookla":
         rand_data = ookla.copy()
+        rand_data["Timestamp"] = get_current_time() + '.010101Z'
         rand_data["Ping"] = get_rand_ping_time()
         rand_data["BytesSent"] = get_rand_bytes()
         rand_data["BytesReceived"] = get_rand_bytes()
@@ -163,10 +176,10 @@ def gen_data(num: int, mlab=False):
     for i in range(num):
         if mlab:
             rand_data = json.dumps(get_rand_data("mlab"))
-            file_name = str(i+1) + "-mlabRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-mlabRandomizedData.JSON"
         else:
             rand_data = json.dumps(get_rand_data("ookla"))
-            file_name = str(i+1) + "-ooklaRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-ooklaRandomizedData.JSON"
         if print_to_stdout:
             print(file_name)
             print()
