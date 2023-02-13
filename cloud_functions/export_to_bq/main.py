@@ -33,10 +33,10 @@ def get_new_data(cloud_event):
    name = data["name"]
    timeCreated = data["timeCreated"]
 
-   print(f"Bucket: {bucket}")
-   print(f"File: {name}")
+   # print(f"Bucket: {bucket}")
+   # print(f"File: {name}")
    
-   uri = f"gs://{bucket}/{name}"
+   # uri = f"gs://{bucket}/{name}"
    print(uri)
 
    if "ookla" in name:

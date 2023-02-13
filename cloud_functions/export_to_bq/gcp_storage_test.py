@@ -1,5 +1,5 @@
 
-import mock
+import unittest
 
 import main
 
@@ -14,7 +14,7 @@ def test_print(capsys):
         'updated': '0'
     }
 
-    context = mock.MagicMock()
+    context = unittest.mock.MagicMock()
     context.event_id = 'some-id'
     context.event_type = 'gcs-event'
 
