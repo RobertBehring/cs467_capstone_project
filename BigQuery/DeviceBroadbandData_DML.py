@@ -110,16 +110,16 @@ multistream_queries = {
                     FROM
                         `cs467-capstone-dummy-data.DeviceBroadbandData.Multistream`
                     WHERE
-                        Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 15 DAY) AND Timestamp <= CURRENT_TIMESTAMP()
+                        Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY) AND Timestamp <= CURRENT_TIMESTAMP()
                     ORDER BY
                         Timestamp"""
 }
 """Time Selection"""
 times = {
-    "daily": """WHERE TestStartTime > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)\n""",
-    "weekly": """WHERE TestStartTime > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n""",
-    "monthly": """WHERE TestStartTime > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 31 DAY)\n""",
-    "yearly": """WHERE TestStartTime > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 365 DAY)\n"""
+    "daily": """WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)\n""",
+    "weekly": """WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)\n""",
+    "monthly": """WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 31 DAY)\n""",
+    "yearly": """WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 365 DAY)\n"""
 }
 
 """#### Testing Functions #####################################################"""
