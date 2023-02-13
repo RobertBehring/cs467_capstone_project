@@ -108,7 +108,7 @@ def get_current_time() -> str:
     # if month < 10:
     #     month = f"0{month}"
     month = "02"
-    day = random.randrange(1, 11)
+    day = random.randrange(1, local_time.tm_mday)
     # day = local_time.tm_mday
     if day < 10:
         day = f"0{day}"
@@ -179,7 +179,8 @@ def get_rand_data(type: str) -> dict:
         rand_data["Ping"] = get_rand_ping_time()
         rand_data["BytesSent"] = get_rand_bytes()
         rand_data["BytesReceived"] = get_rand_bytes()
-        rand_data["ClientIP"] = get_rand_ip()
+        # rand_data["ClientIP"] = get_rand_ip()
+        rand_data["ClientIP"] = "192.10.10.10"
     if type == "mlab":
         rand_data = mlab.copy()
         rand_data["MinRTTValue"] = get_rand_ping_time()
