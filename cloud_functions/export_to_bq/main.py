@@ -3,8 +3,7 @@ import json
 from google.cloud import storage
 from google.cloud import bigquery
 import DeviceBroadbandData_DML as DML
-
-# Copy of get-new-upload Cloud Function used for automatically uploading from bucket to BigQuery 
+import time, random
 
 def get_file_data(bucket, name):
    # Connect to the storage bucket and retrieve the file data
@@ -33,15 +32,21 @@ def get_new_data(cloud_event):
    name = data["name"]
    timeCreated = data["timeCreated"]
 
-   # print(f"Bucket: {bucket}")
-   # print(f"File: {name}")
+   print(f"Bucket: {bucket}")
+   print(f"File: {name}")
    
-   # uri = f"gs://{bucket}/{name}"
+   uri = f"gs://{bucket}/{name}"
    print(uri)
 
-   if "ookla" in name:
-      DML.insert_json_uri(DML.multistream_table, DML.multistream_table_id, uri)
-      
-   else:
-      DML.insert_json_uri(DML.ndt7_table, DML.ndt7_table_id, uri)
-
+   while True:
+      # Try to insert the data
+      try:
+         if "ookla" in name:
+            DML.insert_json_uri(DML.multistream_table, DML.multistream_table_id, uri)
+         
+         elif "mlab" in name:
+            DML.insert_json_uri(DML.ndt7_table, DML.ndt7_table_id, uri)
+         break
+      except:
+         # Sleep for a while then try again
+         time.sleep(random.randint(1, 10))
