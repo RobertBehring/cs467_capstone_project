@@ -60,7 +60,7 @@ def send_csv_email():
     for row in query:
         writer.writerow(list(row.values()))
 
-    email_list = ["behringr@oregonstate.edu", "younjada@oregonstate.edu"]
+    email_list = ["behringr@oregonstate.edu", "younjada@oregonstate.edu", "jim@allthefarms.com"]
 
     # Create the email message
     message = Mail(

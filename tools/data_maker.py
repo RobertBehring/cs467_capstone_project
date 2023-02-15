@@ -180,7 +180,7 @@ def get_rand_data(type: str) -> dict:
         rand_data["BytesSent"] = get_rand_bytes()
         rand_data["BytesReceived"] = get_rand_bytes()
         # rand_data["ClientIP"] = get_rand_ip()
-        rand_data["ClientIP"] = "192.10.10.10"
+        rand_data["ClientIP"] = "192.103.4.54"
     if type == "mlab":
         rand_data = mlab.copy()
         rand_data["MinRTTValue"] = get_rand_ping_time()
