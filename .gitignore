@@ -3,5 +3,6 @@ venv
 *.json
 *.JSON
 tools/__pycache__
+cloud_functions/export_to_bq/__pycache__/
 BigQuery/__pycache__
 sendgrid.env

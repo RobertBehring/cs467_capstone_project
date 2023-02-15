@@ -2,6 +2,7 @@ import os
 import random
 import json
 from dotenv import load_dotenv
+from socket import socket
 #from data_maker import get_rand_ookla
 from google.cloud import storage
 
@@ -66,9 +67,8 @@ class GCPStorage:
     # TODO: function for uploading json file to bucket 
     def upload_to_bucket(self, storage_bucket_name, file_path=None):
         # Create the blob's name
-        dest_blob_name = os.getenv("DESTINATION_BLOB_NAME")
+        dest_blob_name = file_path
         file_num = str(random.randint(1000,9999))
-        dest_blob_name = dest_blob_name + '_' + file_num
 
         # Link to desired bucket and create new blob
         bucket = self.storage_client.bucket(storage_bucket_name)
@@ -86,8 +86,13 @@ class GCPStorage:
 
         print(f"Uploaded {dest_blob_name} to {storage_bucket_name}")
 
+# Helpers
+
+
 if __name__ == "__main__":
     storage = GCPStorage()
-    storage.print_buckets()
-    storage.view_a_bucket(STORAGE_BUCKET_NAME)
-#    storage.upload_to_bucket(STORAGE_BUCKET_NAME, "40-ooklaRandomizedData.JSON")
+    # storage.print_buckets()
+    # storage.view_a_bucket(STORAGE_BUCKET_NAME)
+    # file = "some/file/path"
+    # storage.upload_to_bucket(STORAGE_BUCKET_NAME, file)
+    
