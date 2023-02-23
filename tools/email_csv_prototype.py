@@ -1,6 +1,6 @@
 import base64
 from google.cloud import bigquery
-from datetime import datetime as dt
+import datetime as dt
 import io
 import csv
 import os
@@ -35,7 +35,7 @@ def get_query():
     # Initialize a client for BigQuery
     bigquery_client = bigquery.Client()
     
-    query = "SELECT Timestamp,TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
+    query = "SELECT TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 20 DAY)"
     query_job = bigquery_client.query(query)
 
     return query_job.result()
@@ -45,7 +45,7 @@ def send_csv_email():
     query = get_query()
 
     # Write the results to a CSV file
-    now = dt.now()
+    now = dt.datetime.now()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
     destination_file_name = timestamp + ".bq_export" + ".csv"
 
@@ -56,18 +56,59 @@ def send_csv_email():
     header = [field.name for field in query.schema]
     writer.writerow(header)
 
+    # Statistics
+    num_records = 0
+    downloads = list()
+    uploads = list()
+    pings = list()
+
     # Write data rows
     for row in query:
         writer.writerow(list(row.values()))
+        num_records += 1
+        downloads.append(row["DownloadValue"])
+        uploads.append(row["UploadValue"])
+        pings.append(row["Ping"])
 
-    email_list = ["behringr@oregonstate.edu", "younjada@oregonstate.edu", "jim@allthefarms.com"]
+    email_date_now = now.strftime("%A %B %d, %Y")
+    email_date_prev = (now - dt.timedelta(days=1)).strftime("%A %B %d, %Y")
+    email_list = ["behringr@oregonstate.edu", "younjada@oregonstate.edu", "riemere@oregonstate.edu"]
+    email_body = f'<h1><em>Report: </em>Device Broadband Data</h1><br>'\
+                 f'<strong>{email_date_prev} to {email_date_now}</strong><br>'\
+                 '<table cellspacing="2" bgcolor="#000000">'\
+                    '<tr bgcolor="cccccc">'\
+                        '<th>Field</th>'\
+                        '<th>MAX</th>'\
+                        '<th>MIN</th>'\
+                        '<th>AVG</th>'\
+                    '</tr>'\
+                    '<tr bgcolor="ffffff">'\
+                        '<td>Download Value (bps)</td>'\
+                        f'<td>{round(max(downloads), 3)}</td>'\
+                        f'<td>{round(min(downloads), 3)}</td>'\
+                        f'<td>{round(sum(downloads)/len(downloads), 3)}</td>'\
+                    '</tr>'\
+                    '<tr bgcolor="cccccc">'\
+                        '<td>Upload Value (bps)</td>'\
+                        f'<td>{round(max(uploads), 3)}</td>'\
+                        f'<td>{round(min(uploads), 3)}</td>'\
+                        f'<td>{round(sum(uploads)/len(uploads), 3)}</td>'\
+                    '</tr>'\
+                    '<tr bgcolor="ffffff">'\
+                        '<td>Ping Time (ms)</td>'\
+                        f'<td>{round(max(pings), 3)}</td>'\
+                        f'<td>{round(min(pings), 3)}</td>'\
+                        f'<td>{round(sum(pings)/len(pings), 3)}</td>'\
+                    '</tr>'\
+                '</table>'
+
 
     # Create the email message
     message = Mail(
         from_email=sender_email,
         to_emails=email_list,
-        subject='BigQuery Export',
-        html_content='<strong>This is a test email with a CSV BigQuery Export</strong>'
+        subject='Daily Report: Device Broadband Data',
+        html_content=email_body
     )
 
     # Encode the contents of the csv file as Base64
