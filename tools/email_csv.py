@@ -43,6 +43,10 @@ def send_csv_email(cloud_event):
     dataset_id = "DeviceBroadbandData"
     table_id = "Multistream"
     bucket_name = "bquery_csv_export"
+    
+    # Set the name of the bucket where contacts.csv is stored
+    contacts_bucket = "pagcasa_contacts"
+    
     # Get the current time
     now = dt.now()
 
@@ -54,9 +58,7 @@ def send_csv_email(cloud_event):
     bigquery_client = bigquery.Client(credentials=credentials())
     
     # Query the data you want to export
-    # Commented out below is the query that will export all data
-    # query = "SELECT * FROM `" + dataset_id + "." + table_id + "`"
-    # Commneted out below is the query that will export data from the last 7 days
+    # Below is the query that will export data from the last 7 days
     query = "SELECT Timestamp,TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)"
     query_job = bigquery_client.query(query)
     results = query_job.result()
@@ -78,17 +80,24 @@ def send_csv_email(cloud_event):
     bucket = gcs.bucket(bucket_name)
     blob = bucket.blob(destination_file_name)
     blob.upload_from_string(csv_file.getvalue(), content_type='text/csv')
-
-
-    # print("Exported data to: " + "gs://" + bucket_name + "/" + destination_file_name)
     
-    # List of recipients for the email
-    recipients = ['recipient1@mail.com', 'recipient2@mail.com', 'recipient3@mail.com']
+    # Download the contacts CSV file from GCS bucket
+    contacts = gcs.bucket(contacts_bucket)
+    contacts_blob = contacts.blob("contacts.csv")
+    csv_contents = blob.download_as_string().decode('utf-8')
+
+    # Parse the CSV file and extract the email addresses
+    recipients = []
+    reader = csv.reader(csv_contents.splitlines())
+    for row in reader:
+        for email in row:
+            if '@' in email:
+                recipients.append(email)
 
     # Create the email message
     message = Mail(
         from_email='from_address@mail.com',
-        to_emails= recipients,
+        to_emails=recipients,
         subject='BigQuery Export',
         html_content='<strong>This is a test email with a CSV BigQuery Export</strong>'
     )
