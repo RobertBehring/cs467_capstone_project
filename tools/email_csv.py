@@ -3,7 +3,7 @@ import functions_framework
 from google.cloud import bigquery
 from google.cloud import storage
 import datetime
-from datetime import datetime as dt
+import datetime as dt
 import io
 import csv
 import os
@@ -48,7 +48,7 @@ def send_csv_email(cloud_event):
     contacts_bucket = "pagcasa_contacts"
     
     # Get the current time
-    now = dt.now()
+    now = dt.datetime.now()
 
     # Format the time into a string
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
@@ -81,23 +81,27 @@ def send_csv_email(cloud_event):
     blob = bucket.blob(destination_file_name)
     blob.upload_from_string(csv_file.getvalue(), content_type='text/csv')
     
-    # Download the contacts CSV file from GCS bucket
-    contacts = gcs.bucket(contacts_bucket)
-    contacts_blob = contacts.blob("contacts.csv")
-    csv_contents = blob.download_as_string().decode('utf-8')
+    # Set the contacts bucket name and CSV file name with the list of contacts
+    contacts_bucket = 'pagcasa_contacts'
+    file_name = 'contacts.csv'
 
-    # Parse the CSV file and extract the email addresses
-    recipients = []
-    reader = csv.reader(csv_contents.splitlines())
-    for row in reader:
-        for email in row:
-            if '@' in email:
-                recipients.append(email)
+    # Get the contacts.csv file from the bucket
+    bucket = gcs.bucket(contacts_bucket)
+    blob = bucket.blob(file_name)
+    csv_data = blob.download_as_string()
+
+    # Parse the CSV data and extract email addresses
+    email_list = []
+    csv_lines = csv_data.decode().splitlines()
+    csv_reader = csv.reader(csv_lines)
+    next(csv_reader)
+    for row in csv_reader:
+        email_list.append(row[0])
 
     # Create the email message
     message = Mail(
         from_email='from_address@mail.com',
-        to_emails=recipients,
+        to_emails=email_list,
         subject='BigQuery Export',
         html_content='<strong>This is a test email with a CSV BigQuery Export</strong>'
     )
@@ -113,7 +117,6 @@ def send_csv_email(cloud_event):
         Disposition('attachment')
     )
     message.attachment = attachedFile
-
 
     # send email
     sg = SendGridAPIClient('SENDGRID_API_KEY')
