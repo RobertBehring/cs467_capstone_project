@@ -35,7 +35,7 @@ def get_query():
     # Initialize a client for BigQuery
     bigquery_client = bigquery.Client()
     
-    query = "SELECT TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 20 DAY)"
+    query = "SELECT TestStartTime,ClientIP,ClientLat,ClientLon,DownloadValue,DownloadUnit,UploadValue,UploadUnit,Ping,PingUnit,ServerLatency,ServerLatencyUnit,Isp,IspDownloadAvg,IspUploadAvg FROM `" + dataset_id + "." + table_id + "` WHERE Timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)"
     query_job = bigquery_client.query(query)
 
     return query_job.result()
@@ -73,32 +73,32 @@ def send_csv_email():
     email_date_now = now.strftime("%A %B %d, %Y")
     email_date_prev = (now - dt.timedelta(days=1)).strftime("%A %B %d, %Y")
     email_list = ["behringr@oregonstate.edu", "younjada@oregonstate.edu", "riemere@oregonstate.edu"]
-    email_body = f'<h1><em>Report: </em>Device Broadband Data</h1><br>'\
-                 f'<strong>{email_date_prev} to {email_date_now}</strong><br>'\
-                 '<table cellspacing="2" bgcolor="#000000">'\
+    email_body = '<h1><em>Daily Report: </em>Device Broadband Data</h1><br>'\
+                f'<strong>{email_date_prev} to {email_date_now}</strong><br>'\
+                 '<table cellspacing="2" cellpadding="10" bgcolor="#000000">'\
                     '<tr bgcolor="cccccc">'\
-                        '<th>Field</th>'\
-                        '<th>MAX</th>'\
-                        '<th>MIN</th>'\
-                        '<th>AVG</th>'\
+                         '<th valign="center" align="center">Field</th>'\
+                         '<th valign="center" align="center">MAX</th>'\
+                         '<th valign="center" align="center">MIN</th>'\
+                         '<th valign="center" align="center">AVG</th>'\
                     '</tr>'\
                     '<tr bgcolor="ffffff">'\
-                        '<td>Download Value (bps)</td>'\
-                        f'<td>{round(max(downloads), 3)}</td>'\
-                        f'<td>{round(min(downloads), 3)}</td>'\
-                        f'<td>{round(sum(downloads)/len(downloads), 3)}</td>'\
+                         '<td valign="center">Download Value (bps)</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(downloads) == 0 else round(max(downloads), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(downloads) == 0 else round(min(downloads), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(downloads) == 0 else round(sum(downloads)/len(downloads), 3)}</td>'\
                     '</tr>'\
                     '<tr bgcolor="cccccc">'\
-                        '<td>Upload Value (bps)</td>'\
-                        f'<td>{round(max(uploads), 3)}</td>'\
-                        f'<td>{round(min(uploads), 3)}</td>'\
-                        f'<td>{round(sum(uploads)/len(uploads), 3)}</td>'\
+                         '<td valign="center">Upload Value (bps)</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(uploads) == 0 else round(max(uploads), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(uploads) == 0 else round(min(uploads), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(uploads) == 0 else round(sum(uploads)/len(uploads), 3)}</td>'\
                     '</tr>'\
                     '<tr bgcolor="ffffff">'\
-                        '<td>Ping Time (ms)</td>'\
-                        f'<td>{round(max(pings), 3)}</td>'\
-                        f'<td>{round(min(pings), 3)}</td>'\
-                        f'<td>{round(sum(pings)/len(pings), 3)}</td>'\
+                         '<td valign="center">Ping Time (ms)</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(pings) == 0 else round(max(pings), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(pings) == 0 else round(min(pings), 3)}</td>'\
+                        f'<td valign="center" align="center">{"No data" if len(pings) == 0 else round(sum(pings)/len(pings), 3)}</td>'\
                     '</tr>'\
                 '</table>'
 
