@@ -14,6 +14,7 @@ Description:
         "BytesReceived"
 """
 import sys
+import os
 import time
 import random
 import json
@@ -104,31 +105,82 @@ def get_current_time() -> str:
     local_time = time.localtime()
     year = local_time.tm_year
     month = local_time.tm_mon
-    day = local_time.tm_mday
+    # if month < 10:
+    #     month = f"0{month}"
+    month = "02"
+    day = random.randrange(1, local_time.tm_mday)
+    # day = local_time.tm_mday
+    if day < 10:
+        day = f"0{day}"
     hour = local_time.tm_hour
+    if hour < 10:
+        hour = f"0{hour}"
     minute = local_time.tm_min
+    if minute < 10:
+        minute = f"0{minute}"
     second = local_time.tm_sec
+    if second < 10:
+        second = f"0{second}"
 
     return f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
 def get_rand_bit_per_sec() -> float:
-    return random.randrange(0, 9999999) + random.random()
+    return random.randrange(1000000, 2000000) + random.random()
 
 def get_rand_ping_time() -> float:
     return round(random.randrange(0, 200) + random.random(), 3)
 
 def get_rand_bytes() -> int:
-    return random.randrange(0, 9999999)
+    return random.randrange(900000, 1000000)
 
 def get_rand_dist() -> float:
     return random.randrange(0, 9999) + random.random()
 
+def get_rand_ip() -> str:
+    """
+    get_rand_ip() returns a random IPv4 address within the range 
+    [0.0.0.1, 255.255.255.254]
+
+    return: Randomized IPv4 Address
+    """
+    reserved = [
+        "0.0.0.0",
+        "10.0.0.0",
+        "100.64.0.0",
+        "127.0.0.0",
+        "169.254.0.0",
+        "172.16.0.0",
+        "192.0.0.0",
+        "192.0.2.0",
+        "192.88.99.0",
+        "192.168.0.0",
+        "198.18.0.0",
+        "198.51.100.0",
+        "203.0.113.0",
+        "224.0.0.0",
+        "233.252.0.0",
+        "240.0.0.0",
+        "255.255.255.255"
+    ]
+    randIP = ""
+    randIP += str(random.randrange(0, 255))
+    for i in range(3):
+        randIP += '.' + str(random.randrange(0, 255))
+
+    if randIP in reserved:
+        get_rand_ip()
+    
+    return randIP
+
 def get_rand_data(type: str) -> dict:
     if type == "ookla":
         rand_data = ookla.copy()
+        rand_data["Timestamp"] = get_current_time() + '.010101Z'
         rand_data["Ping"] = get_rand_ping_time()
         rand_data["BytesSent"] = get_rand_bytes()
         rand_data["BytesReceived"] = get_rand_bytes()
+        # rand_data["ClientIP"] = get_rand_ip()
+        rand_data["ClientIP"] = "192.10.10.10"
     if type == "mlab":
         rand_data = mlab.copy()
         rand_data["MinRTTValue"] = get_rand_ping_time()
@@ -154,6 +206,14 @@ def set_num_mlab(num: int):
 def display_help():
     print(help_msg)
 
+def delete_files():
+    path = "gen_data/"
+    for file in os.listdir(path):
+        if os.path.exists(path+file):
+            os.remove(path+file)
+        else:
+            print("The file does not exist")
+
 def write_to_json(file_name: str, data: dict):
     f = open(file_name, "w")
     f.write(data)
@@ -163,10 +223,10 @@ def gen_data(num: int, mlab=False):
     for i in range(num):
         if mlab:
             rand_data = json.dumps(get_rand_data("mlab"))
-            file_name = str(i+1) + "-mlabRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-mlabRandomizedData.JSON"
         else:
             rand_data = json.dumps(get_rand_data("ookla"))
-            file_name = str(i+1) + "-ooklaRandomizedData.JSON"
+            file_name = "gen_data/" + str(i+1) + "-ooklaRandomizedData.JSON"
         if print_to_stdout:
             print(file_name)
             print()
@@ -180,7 +240,8 @@ def gen_data(num: int, mlab=False):
 # Input
 msg_funcs = {
     "-p": set_print,
-    "-h": display_help
+    "-h": display_help,
+    "-d": delete_files
 }
 output_funcs = {
     "-ookla": set_num_ookla,
@@ -201,7 +262,7 @@ for i in range(1, len(sys.argv)):
 
 
 if __name__ == '__main__':
-    print("\t\t===========\tGENERATING DATA\t===========\n\n")
+    # print("\t\t===========\tGENERATING DATA\t===========\n\n")
     gen_data(num_ookla)
     gen_data(num_mlab, mlab=True)
     print("\n\t\t\t\tProgram Exiting. . .\n\n")

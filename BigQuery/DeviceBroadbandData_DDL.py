@@ -32,7 +32,7 @@ ndt7_schema = [
     bigquery.SchemaField("UploadUnit", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("DownloadError", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("DownloadValue", "FLOAT", mode="NULLABLE"),
-    bigquery.SchemaField("TestEndTime", "TIMESTAMP", mode="NULLABLE"),
+    bigquery.SchemaField("TestEndTime", "DATETIME", mode="NULLABLE"),
     bigquery.SchemaField("ServerName", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("MurakamiLocation", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("ServerIP", "STRING", mode="NULLABLE"),
@@ -41,7 +41,7 @@ ndt7_schema = [
     bigquery.SchemaField("MurakamiNetworkType", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("TestName", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("MurakamiConnectionType", "STRING", mode="NULLABLE"),
-    bigquery.SchemaField("TestStartTime", "STRING", mode="NULLABLE")
+    bigquery.SchemaField("TestStartTime", "DATETIME", mode="NULLABLE")
 ]
 
 """Uncomment below 5 lines to create table"""
@@ -86,7 +86,7 @@ multistream_schema = [
     bigquery.SchemaField("Ping", "FLOAT", mode="NULLABLE"),
     bigquery.SchemaField("UploadValue", "FLOAT", mode="NULLABLE"),
     bigquery.SchemaField("Rating", "INTEGER", mode="NULLABLE"),
-    bigquery.SchemaField("TestEndTime", "TIMESTAMP", mode="NULLABLE"),
+    bigquery.SchemaField("TestEndTime", "DATETIME", mode="NULLABLE"),
     bigquery.SchemaField("UploadUnit", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("MurakamiConnectionType", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("DownloadValue", "FLOAT", mode="NULLABLE"),
@@ -94,7 +94,7 @@ multistream_schema = [
     bigquery.SchemaField("ServerLon", "FLOAT", mode="NULLABLE"),
     bigquery.SchemaField("ServerURL", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("TestName", "STRING", mode="NULLABLE"),
-    bigquery.SchemaField("TestStartTime", "TIMESTAMP", mode="NULLABLE"),
+    bigquery.SchemaField("TestStartTime", "DATETIME", mode="NULLABLE"),
     bigquery.SchemaField("DownloadUnit", "STRING", mode="NULLABLE")
 ]
 
