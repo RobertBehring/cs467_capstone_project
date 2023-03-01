@@ -14,11 +14,13 @@ client = bigquery.Client()
 # -- #####################################################
 # -- TABLE PARAMETERS
 # -- #####################################################
-project_dataset = "cs467-capstone-dummy-data.DeviceBroadbandData."
+# project_dataset = "cs467-capstone-dummy-data.DeviceBroadbandData."
+dataset = "DeviceBroadbandData"
+project_dataset = client.project + '.' + dataset
 # -- -----------------------------------------------------
 # -- Table NDT-7
 # -- -----------------------------------------------------
-ndt7_table_id = project_dataset + "NDT-7"
+ndt7_table_id = project_dataset + '.' + "NDT-7"
 
 ndt7_schema = [
     bigquery.SchemaField("MinRTTUnit", "STRING", mode="NULLABLE"),
@@ -44,17 +46,10 @@ ndt7_schema = [
     bigquery.SchemaField("TestStartTime", "DATETIME", mode="NULLABLE")
 ]
 
-"""Uncomment below 5 lines to create table"""
-# ndt7_table = bigquery.Table(ndt7_table_id, schema=ndt7_schema)
-# ndt7_table = client.create_table(ndt7_table)
-# print(
-#     "Created table {}.{}.{}".format(ndt7_table.project, ndt7_table.dataset_id, ndt7_table.table_id)
-# )
-
 # -- -----------------------------------------------------
 # -- Table Multistream
 # -- -----------------------------------------------------
-multistream_table_id = project_dataset + "Multistream"
+multistream_table_id = project_dataset + '.' + "Multistream"
 
 multistream_schema = [
     bigquery.SchemaField("Country", "STRING", mode="NULLABLE"),
@@ -98,9 +93,26 @@ multistream_schema = [
     bigquery.SchemaField("DownloadUnit", "STRING", mode="NULLABLE")
 ]
 
-"""Uncomment below 5 lines to create table"""
-# multistream_table = bigquery.Table(multistream_table_id, schema=multistream_schema)
-# multistream_table = client.create_table(multistream_table)
-# print(
-#     "Created table {}.{}.{}".format(multistream_table.project, multistream_table.dataset_id, multistream_table.table_id)
-# )
+
+if __name__ == '__main__':
+    client.delete_dataset(
+        project_dataset, delete_contents=True, not_found_ok=True)
+    print("Deleted dataset '{}'.".format(project_dataset))
+
+    dataset = bigquery.Dataset(project_dataset)
+    dataset.location = "us-west1"
+    dataset = client.create_dataset(dataset, timeout=30)
+    print("Created dataset {}.{}".format(client.project, dataset.dataset_id))
+
+
+    multistream_table = bigquery.Table(multistream_table_id, schema=multistream_schema)
+    multistream_table = client.create_table(multistream_table)
+    print(
+        "Created table {}.{}.{}".format(multistream_table.project, multistream_table.dataset_id, multistream_table.table_id)
+    )
+
+    ndt7_table = bigquery.Table(ndt7_table_id, schema=ndt7_schema)
+    ndt7_table = client.create_table(ndt7_table)
+    print(
+        "Created table {}.{}.{}".format(ndt7_table.project, ndt7_table.dataset_id, ndt7_table.table_id)
+    )
